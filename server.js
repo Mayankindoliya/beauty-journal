@@ -11,11 +11,11 @@ app.use(express.json());
 
 app.use(middlewares.errorHandlingMiddleware);
 
-// Database & Server Connection:
 
+// Database & Server Connection:
 mongoose.connect(process.env.MONGODB_URL)
   .then(() => {
-    console.log('Databse Connected (())')
+    console.log('Database Connected (())')
     app.listen(3000, () => {
       console.log("Server is Connected (())")
     })
