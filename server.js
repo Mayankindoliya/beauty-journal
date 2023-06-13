@@ -9,6 +9,10 @@ const Router = require('./routes');
 const app = express();
 
 app.use(express.json());
+
+//queryCriteria middleware // Get_request:
+app.use(Middlewares.queryCriteria)
+
 app.use(Router);
 
 // errorHandling Middleware:
