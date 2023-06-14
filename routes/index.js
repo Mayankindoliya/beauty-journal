@@ -1,4 +1,5 @@
 module.exports = [
   require('./auth'),
-  require('./tags')
+  require('./tags'),
+  require('./categories')
 ];
