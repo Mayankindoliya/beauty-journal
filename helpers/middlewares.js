@@ -1,4 +1,5 @@
-
+const Users = require('../models/users');
+const Jwt = require('./jwt');
 
 
 // error handling Middleware:
@@ -12,7 +13,7 @@ function queryCriteria(req, res, next) {
   const criteria = {
     options: {}
   }
-  if (req.query.filter) {  
+  if (req.query.filter) {
     criteria.filter = JSON.parse(req.query.filter)   // used as filter
   }
   if (req.query.fields) {
@@ -31,10 +32,27 @@ function queryCriteria(req, res, next) {
   next();
 };
 
-// authorization Middleware:
+// authentication Middleware:
+async function authenticationMiddleware(req, res, next) {
+  const authHeader = req.headers.authorization
 
+  try {
+    if (authHeader) {
+      const token = authHeader.split(' ')[1]
+      const payload = Jwt.verifyJwt(token)
+      const user = await Users.findOne({ _id: payload.id }, 'first_name email username').lean()
+      user.id = payload.id
+      req.user = user
+    }
+  }
+  catch (err) {
+    console.log("error during authorization")
+    next(err)
+  }
+};
 
 module.exports = {
   errorHandlingMiddleware,
-  queryCriteria
+  queryCriteria,
+  authenticationMiddleware
 };

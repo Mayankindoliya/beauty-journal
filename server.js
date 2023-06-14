@@ -11,7 +11,10 @@ const app = express();
 app.use(express.json());
 
 //queryCriteria middleware // Get_request:
-app.use(Middlewares.queryCriteria)
+app.use(Middlewares.queryCriteria);
+
+// auhtentication Middleware:
+app.use(Middlewares.authenticationMiddleware);
 
 app.use(Router);
 
