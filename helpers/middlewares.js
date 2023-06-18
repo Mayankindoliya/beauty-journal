@@ -44,6 +44,7 @@ async function authenticationMiddleware(req, res, next) {
       user.id = payload.id
       req.user = user
     }
+    next()
   }
   catch (err) {
     console.log("error during authorization")
