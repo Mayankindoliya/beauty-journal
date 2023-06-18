@@ -3,13 +3,23 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 
-const middlewares = require('./helpers/middlewares');
+const Middlewares = require('./helpers/middlewares');
+const Router = require('./routes');
 
 const app = express();
 
 app.use(express.json());
 
-app.use(middlewares.errorHandlingMiddleware);
+//queryCriteria middleware // Get_request:
+app.use(Middlewares.queryCriteria);
+
+// auhtentication Middleware:
+app.use(Middlewares.authenticationMiddleware);
+
+app.use(Router);
+
+// errorHandling Middleware:
+app.use(Middlewares.errorHandlingMiddleware);
 
 
 // Database & Server Connection:
