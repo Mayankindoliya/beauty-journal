@@ -5,6 +5,7 @@ const { genRandomNumber } = require('../helpers/otp');
 const { options } = require('../routes/categories');
 const axios = require('axios');
 const OTP_verification = require('../models/otp_verification');
+const otp_verification = require('../models/otp_verification');
 
 class AuthControllers {
 
@@ -49,11 +50,34 @@ class AuthControllers {
                 authorization: process.env.FAST2SMS_KEY
             }
         });
-        otp.request_id = response.data.request_id 
-        return OTP_verification.create(otp) 
+        otp.request_id = response.data.request_id
+        return OTP_verification.create(otp)
 
     };
 
+    static async verifyOTP(document) {
+        const user = await Users.findOne({ phone_no: document.phone_no }).lean()
+        if (!user) {
+            throw new Error('user not found')
+        }
+        const otp = await OTP_verification.findOne({ user_id: user._id, status: 'waiting' }).sort({ created_at: -1 }).lean()
+        if (!otp) {
+            throw new Error('otp not found')
+        }
+        const currentTime = new Date()
+        if (currentTime > otp.expires_at) {
+           await OTP_verification.updateOne({_id: otp._id}, {status: 'expired'})
+            throw new Error('otp expired')
+        }
+        if(otp.code !== Number(document.code)) {
+            throw new Error('otp not matched')
+        }
+        await OTP_verification.updateOne({_id: otp._id}, {status: 'verified'})
+        // generate token
+        return Jwt.createJwt({id: user._id}) 
+
+    
+    };
 };
 
 module.exports = AuthControllers;

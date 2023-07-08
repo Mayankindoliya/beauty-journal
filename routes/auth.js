@@ -24,5 +24,15 @@ router.post('/auth/login', (req, res, next) => {
     })
 });
 
+router.post('/auth/verifyOTP', (req, res, next) => {
+  AuthControllers.verifyOTP(req.body)
+    .then((data) => {
+      res.json(data)
+    })
+    .catch((err) => {
+      next(err)
+    })
+});
+
 
 module.exports = router;
