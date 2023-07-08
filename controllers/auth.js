@@ -33,7 +33,7 @@ class AuthControllers {
     static async otpSend(user_id, phone_no) {
         const otp = { user_id, phone_no, code: genRandomNumber(), status: 'waiting' }
         // expiryTime for OTP:
-        let expiryTime = new Date();
+        let expiryTime = new Date();  // current time
         expiryTime.setMinutes(expiryTime.getMinutes() + 5);
         otp.expires_at = expiryTime
 
